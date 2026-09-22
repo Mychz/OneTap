@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OneTap NFC</title>
+</head>
+
+<body>
+  <p>OneTap NFC — Redirecting...</p>
+
+  <script>
+    const links = {
+      "OT0001": "https://www.facebook.com",
+      "OT0002": "https://www.google.com",
+      "OT0003": "https://www.instagram.com"
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    if (id && links[id]) {
+      window.location.replace(links[id]);
+    } else {
+      document.body.innerHTML =
+        "<h2>OneTap NFC</h2><p>This card has not been activated yet.</p>";
+    }
+  </script>
+</body>
+</html>
