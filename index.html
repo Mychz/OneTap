@@ -7,66 +7,89 @@
 </head>
 
 <body>
-  <p id="message">Opening OneTap...</p>
 
-  <script>
-    const SUPABASE_URL = "https://czhcfwuopdnjirpcvpkk.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_CQltYcF2F5uNSCJZY7Jhgg_BWJX-IHR";
+<p id="message">Opening OneTap...</p>
 
-    const params = new URLSearchParams(window.location.search);
-    const cardCode = params.get("id");
+<script>
+const SUPABASE_URL = "https://czhcfwuopdnjirpcvpkk.supabase.co";
+const SUPABASE_KEY = "sb_publishable_CQltYcF2F5uNSCJZY7Jhgg_BWJX-IHR";
 
-    async function openCard() {
-      const message = document.getElementById("message");
+const params = new URLSearchParams(window.location.search);
+const cardCode = params.get("id");
 
-      if (!cardCode) {
-        message.textContent = "Invalid OneTap card.";
-        return;
+async function openCard() {
+
+  const message = document.getElementById("message");
+
+  if (!cardCode) {
+    message.textContent = "Invalid OneTap card.";
+    return;
+  }
+
+  try {
+
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/rpc/get_card_destination`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": SUPABASE_KEY,
+          "Authorization": `Bearer ${SUPABASE_KEY}`
+        },
+        body: JSON.stringify({
+          p_card_code: cardCode
+        })
       }
+    );
 
-      try {
-        const response = await fetch(
-          `${SUPABASE_URL}/rest/v1/rpc/get_card_destination`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "apikey": SUPABASE_KEY,
-              "Authorization": `Bearer ${SUPABASE_KEY}`
-            },
-            body: JSON.stringify({
-              p_card_code: cardCode
-            })
-          }
-        );
+    if (!response.ok) {
+      throw new Error("Unable to contact OneTap.");
+    }
 
-        if (!response.ok) {
-          throw new Error("Unable to contact OneTap.");
-        }
+    let data = await response.json();
 
-        const data = await response.json();
-        console.log("OneTap response:", data, typeof data);
+    // Handle Supabase returning JSON as a string
+    if (typeof data === "string") {
+      data = JSON.parse(data);
+    }
 
-// Card does not exist
-if (!data || !data.found) {
-  message.textContent = "OneTap card not found.";
-  return;
+    console.log("OneTap response:", data);
+
+    if (!data || !data.found) {
+      message.textContent = "OneTap card not found.";
+      return;
+    }
+
+    // NEW / UNACTIVATED CARD
+    if (data.status === "available") {
+      message.textContent = "Opening activation...";
+
+      window.location.href =
+        `./activate/?card=${encodeURIComponent(cardCode)}`;
+
+      return;
+    }
+
+    // ACTIVATED CARD
+    if (data.destination_url) {
+      message.textContent = "Opening OneTap...";
+      window.location.href = data.destination_url;
+      return;
+    }
+
+    message.textContent = "Unable to open this OneTap card.";
+
+  } catch (error) {
+
+    console.error("OneTap error:", error);
+    message.textContent = "Unable to open this OneTap card.";
+
+  }
 }
 
-// Card has never been activated
-if (data.status === "available") {
-  message.textContent = "Opening activation...";
-  window.location.replace(
-    `./activate/?card=${encodeURIComponent(cardCode)}`
-  );
-  return;
-}
+openCard();
+</script>
 
-// Card is already activated
-if (data.destination_url) {
-  message.textContent = "Opening OneTap...";
-  window.location.replace(data.destination_url);
-  return;
-}
-
-message.textContent = "Unable to open this OneTap card.";
+</body>
+</html>
