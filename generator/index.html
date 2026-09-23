@@ -153,6 +153,10 @@
       Generate QR Codes
     </button>
 
+    <button onclick="generatePrintSheets()">
+      Generate Print Sheets
+    </button>
+
     <button onclick="window.print()">
       Print
     </button>
@@ -269,6 +273,31 @@ const permanentURL =
       correctLevel: QRCode.CorrectLevel.H
     });
   }
+}
+
+  async function generatePrintSheets() {
+
+  const start = parseInt(
+    document.getElementById("startNumber").value
+  );
+
+  const end = parseInt(
+    document.getElementById("endNumber").value
+  );
+
+  if (
+    isNaN(start) ||
+    isNaN(end) ||
+    start < 1 ||
+    end < start
+  ) {
+    alert("Please enter a valid number range.");
+    return;
+  }
+
+  alert(
+    `Print Sheet Generator ready!\nCards: ${start} to ${end}`
+  );
 }
 
 </script>
