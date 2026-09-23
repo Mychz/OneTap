@@ -16,6 +16,7 @@ const SUPABASE_KEY = "sb_publishable_CQltYcF2F5uNSCJZY7Jhgg_BWJX-IHR";
 
 const params = new URLSearchParams(window.location.search);
 const cardCode = params.get("id");
+const activationKey = params.get("k");
 
 async function openCard() {
 
@@ -63,13 +64,18 @@ async function openCard() {
 
     // NEW / UNACTIVATED CARD
     if (data.status === "available") {
-      message.textContent = "Opening activation...";
+  message.textContent = "Opening activation...";
 
-      window.location.href =
-        `./activate/?card=${encodeURIComponent(cardCode)}`;
+  if (!activationKey) {
+    message.textContent = "Activation key missing.";
+    return;
+  }
 
-      return;
-    }
+  window.location.href =
+    `./activate/?card=${encodeURIComponent(cardCode)}&token=${encodeURIComponent(activationKey)}`;
+
+  return;
+}
 
     // ACTIVATED CARD
     if (data.destination_url) {
