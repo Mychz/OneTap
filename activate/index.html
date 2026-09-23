@@ -73,7 +73,19 @@
     const SUPABASE_KEY =
       "sb_publishable_CQltYcF2F5uNSCJZY7Jhgg_BWJX-IHR";
 
+// Automatically read Card ID and activation code from QR link
+const urlParams = new URLSearchParams(window.location.search);
 
+const cardFromURL = urlParams.get("card");
+const tokenFromURL = urlParams.get("token");
+
+if (cardFromURL) {
+  document.getElementById("cardCode").value = cardFromURL;
+}
+
+if (tokenFromURL) {
+  document.getElementById("activationToken").value = tokenFromURL;
+}
     async function activateCard() {
 
       const cardCode =
