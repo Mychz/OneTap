@@ -319,15 +319,13 @@ for (let i = start; i <= end; i += 4) {
     if (number > end) break;
 
     const card = document.createElement("div");
-
-    card.style.border = "1px solid #ccc";
-    card.style.display = "flex";
-    card.style.alignItems = "center";
-    card.style.justifyContent = "center";
-    card.style.fontSize = "28px";
-    card.style.fontWeight = "bold";
-
-    card.textContent = makeCardCode(number);
+    
+card.style.position = "relative";
+card.style.backgroundImage = 'url("./google-review-template.png")';
+card.style.backgroundSize = "100% 100%";
+card.style.backgroundRepeat = "no-repeat";
+card.style.backgroundPosition = "center";
+card.style.overflow = "hidden";
 
     sheet.appendChild(card);
   }
