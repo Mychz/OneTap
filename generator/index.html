@@ -300,34 +300,72 @@ output.innerHTML = "";
 
 for (let i = start; i <= end; i += 4) {
 
+  // ===== 200mm x 300mm PRINT SHEET =====
   const sheet = document.createElement("div");
 
   sheet.style.width = "200mm";
   sheet.style.height = "300mm";
   sheet.style.background = "white";
-  sheet.style.display = "grid";
-  sheet.style.gridTemplateColumns = "1fr 1fr";
-  sheet.style.gridTemplateRows = "1fr 1fr";
   sheet.style.margin = "20px auto";
-  sheet.style.pageBreakAfter = "always";
   sheet.style.boxSizing = "border-box";
+  sheet.style.pageBreakAfter = "always";
+  sheet.style.position = "relative";
+  sheet.style.overflow = "hidden";
+
+  // ===== MINI CARDS AT TOP =====
+  const miniRow = document.createElement("div");
+
+  miniRow.style.height = "75mm";
+  miniRow.style.display = "flex";
+  miniRow.style.justifyContent = "space-around";
+  miniRow.style.alignItems = "center";
+  miniRow.style.padding = "5mm 10mm";
+  miniRow.style.boxSizing = "border-box";
+
+  for (let m = 0; m < 3; m++) {
+    const mini = document.createElement("div");
+
+    mini.style.width = "50mm";
+    mini.style.height = "50mm";
+    mini.style.backgroundImage = "url('./Untitled design (4).png')";
+    mini.style.backgroundSize = "100% 100%";
+    mini.style.backgroundRepeat = "no-repeat";
+    mini.style.backgroundPosition = "center";
+
+    miniRow.appendChild(mini);
+  }
+
+  sheet.appendChild(miniRow);
+
+  // ===== FOUR MAIN CARDS =====
+  const mainGrid = document.createElement("div");
+
+  mainGrid.style.width = "190mm";
+  mainGrid.style.height = "190mm";
+  mainGrid.style.margin = "0 auto";
+  mainGrid.style.display = "grid";
+  mainGrid.style.gridTemplateColumns = "95mm 95mm";
+  mainGrid.style.gridTemplateRows = "95mm 95mm";
 
   for (let j = 0; j < 4; j++) {
 
     const number = i + j;
-
     if (number > end) break;
 
     const card = document.createElement("div");
-    
-card.style.position = "relative";
-card.style.backgroundImage = "url('./Copy of Untitled Design (1).png')";
-card.style.backgroundSize = "100% 100%";
-card.style.backgroundRepeat = "no-repeat";
-card.style.backgroundPosition = "center";
-card.style.overflow = "hidden";
 
-    sheet.appendChild(card);
+    card.style.width = "95mm";
+    card.style.height = "95mm";
+    card.style.position = "relative";
+    card.style.backgroundImage =
+      "url('./Copy of Untitled Design (1).png')";
+    card.style.backgroundSize = "100% 100%";
+    card.style.backgroundRepeat = "no-repeat";
+    card.style.backgroundPosition = "center";
+    card.style.overflow = "hidden";
+
+    sheet.appendChild(mainGrid);
+    mainGrid.appendChild(card);
   }
 
   output.appendChild(sheet);
