@@ -365,6 +365,57 @@ for (let i = start; i <= end; i += 4) {
     card.style.overflow = "hidden";
 
     sheet.appendChild(mainGrid);
+
+const cardCode = makeCardCode(number);
+
+const response = await fetch(
+  `${SUPABASE_URL}/rest/v1/rpc/get_card_qr_data`,
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "apikey": SUPABASE_KEY,
+      "Authorization": `Bearer ${SUPABASE_KEY}`
+    },
+    body: JSON.stringify({
+      p_card_code: cardCode
+    })
+  }
+);
+
+if (response.ok) {
+  let cardData = await response.json();
+
+  if (typeof cardData === "string") {
+    cardData = JSON.parse(cardData);
+  }
+
+  if (cardData.found && cardData.activation_token) {
+    const permanentURL =
+      BASE_URL +
+      "?id=" + encodeURIComponent(cardCode) +
+      "&k=" + encodeURIComponent(cardData.activation_token);
+
+    const qrBox = document.createElement("div");
+
+    qrBox.style.position = "absolute";
+    qrBox.style.width = "24mm";
+    qrBox.style.height = "24mm";
+    qrBox.style.right = "9mm";
+    qrBox.style.bottom = "9mm";
+    qrBox.style.background = "white";
+
+    card.appendChild(qrBox);
+
+    new QRCode(qrBox, {
+      text: permanentURL,
+      width: 90,
+      height: 90,
+      correctLevel: QRCode.CorrectLevel.H
+    });
+  }
+}
+    
     mainGrid.appendChild(card);
   }
 
