@@ -44,27 +44,15 @@
           throw new Error("Unable to contact OneTap.");
         }
 
-        const data = await response.json();
+        const destinationUrl = await response.json();
 
-        if (!data.found) {
-          message.textContent = "OneTap card not found.";
-          return;
-        }
+if (!destinationUrl) {
+  message.textContent = "OneTap card not found or not activated.";
+  return;
+}
 
-        if (
-          (data.status === "activated" || data.status === "locked") &&
-          data.destination_url
-        ) {
-          window.location.replace(data.destination_url);
-          return;
-        }
-
-        if (data.status === "available") {
-          message.textContent = "This OneTap card is ready for activation.";
-          return;
-        }
-
-        message.textContent = "Unable to open this OneTap card.";
+message.textContent = "Opening OneTap...";
+window.location.replace(destinationUrl);
 
       } catch (error) {
         console.error(error);
