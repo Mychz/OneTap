@@ -167,11 +167,14 @@
 
 const BASE_URL = "https://mychz.github.io/OneTap/";
 
+const SUPABASE_URL = "https://czhcfwuopdnjirpcvpkk.supabase.co";
+const SUPABASE_KEY = "sb_publishable_CQltYcF2F5uNSCJZY7Jhgg_BWJX-IHR";
+
 function makeCardCode(number) {
   return "OT" + String(number).padStart(5, "0");
 }
 
-function generateQRs() {
+async function generateQRs() {
 
   const start =
     parseInt(document.getElementById("startNumber").value);
@@ -203,8 +206,41 @@ function generateQRs() {
 
     const cardCode = makeCardCode(i);
 
-    const permanentURL =
-      BASE_URL + "?id=" + encodeURIComponent(cardCode);
+    const response = await fetch(
+  `${SUPABASE_URL}/rest/v1/rpc/get_card_qr_data`,
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "apikey": SUPABASE_KEY,
+      "Authorization": `Bearer ${SUPABASE_KEY}`
+    },
+    body: JSON.stringify({
+      p_card_code: cardCode
+    })
+  }
+);
+
+if (!response.ok) {
+  console.error("Could not load:", cardCode);
+  continue;
+}
+
+let cardData = await response.json();
+
+if (typeof cardData === "string") {
+  cardData = JSON.parse(cardData);
+}
+
+if (!cardData.found || !cardData.activation_token) {
+  console.error("Card/token missing:", cardCode);
+  continue;
+}
+
+const permanentURL =
+  BASE_URL +
+  "?id=" + encodeURIComponent(cardCode) +
+  "&k=" + encodeURIComponent(cardData.activation_token);
 
     const card = document.createElement("div");
     card.className = "qr-card";
