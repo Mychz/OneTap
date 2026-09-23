@@ -295,9 +295,45 @@ const permanentURL =
     return;
   }
 
-  alert(
-    `Print Sheet Generator ready!\nCards: ${start} to ${end}`
-  );
+  const output = document.getElementById("qrGrid");
+output.innerHTML = "";
+
+for (let i = start; i <= end; i += 4) {
+
+  const sheet = document.createElement("div");
+
+  sheet.style.width = "200mm";
+  sheet.style.height = "300mm";
+  sheet.style.background = "white";
+  sheet.style.display = "grid";
+  sheet.style.gridTemplateColumns = "1fr 1fr";
+  sheet.style.gridTemplateRows = "1fr 1fr";
+  sheet.style.margin = "20px auto";
+  sheet.style.pageBreakAfter = "always";
+  sheet.style.boxSizing = "border-box";
+
+  for (let j = 0; j < 4; j++) {
+
+    const number = i + j;
+
+    if (number > end) break;
+
+    const card = document.createElement("div");
+
+    card.style.border = "1px solid #ccc";
+    card.style.display = "flex";
+    card.style.alignItems = "center";
+    card.style.justifyContent = "center";
+    card.style.fontSize = "28px";
+    card.style.fontWeight = "bold";
+
+    card.textContent = makeCardCode(number);
+
+    sheet.appendChild(card);
+  }
+
+  output.appendChild(sheet);
+}
 }
 
 </script>
