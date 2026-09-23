@@ -45,6 +45,7 @@
         }
 
         const data = await response.json();
+        console.log("OneTap response:", data, typeof data);
 
 // Card does not exist
 if (!data || !data.found) {
