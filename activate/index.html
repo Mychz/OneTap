@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activate OneTap</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 420px;
+      margin: 80px auto;
+      padding: 25px;
+      text-align: center;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      margin: 8px 0;
+      box-sizing: border-box;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    #message {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>OneTap NFC</h1>
+  <h2>Activate Your Card</h2>
+
+  <p>Enter your card details and destination link.</p>
+
+  <input
+    id="cardCode"
+    type="text"
+    placeholder="Card Code"
+  >
+
+  <input
+    id="activationToken"
+    type="text"
+    placeholder="Activation Code"
+  >
+
+  <input
+    id="destination"
+    type="url"
+    placeholder="https://your-link.com"
+  >
+
+  <button onclick="activateCard()">
+    Activate OneTap
+  </button>
+
+  <p id="message"></p>
+
+  <script>
+
+    const SUPABASE_URL =
+      "https://czhcfwuopdnjirpcvpkk.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_CQltYcF2F5uNSCJZY7Jhgg_BWJX-IHR";
+
+
+    async function activateCard() {
+
+      const cardCode =
+        document.getElementById("cardCode").value.trim();
+
+      const token =
+        document.getElementById("activationToken").value.trim();
+
+      const destination =
+        document.getElementById("destination").value.trim();
+
+      const message =
+        document.getElementById("message");
+
+
+      if (!cardCode || !token || !destination) {
+
+        message.textContent =
+          "Please complete all fields.";
+
+        return;
+      }
+
+
+      message.textContent =
+        "Activating...";
+
+
+      try {
+
+        const response = await fetch(
+          `${SUPABASE_URL}/rest/v1/rpc/activate_card`,
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type": "application/json",
+              "apikey": SUPABASE_KEY,
+              "Authorization": `Bearer ${SUPABASE_KEY}`
+            },
+
+            body: JSON.stringify({
+              p_card_code: cardCode,
+              p_activation_token: token,
+              p_destination_url: destination
+            })
+          }
+        );
+
+
+        const data = await response.json();
+
+
+        if (data.success) {
+
+          message.textContent =
+            "✓ OneTap activated successfully!";
+
+        } else {
+
+          message.textContent =
+            data.message || "Activation failed.";
+
+        }
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        message.textContent =
+          "Unable to activate card.";
+
+      }
+
+    }
+
+  </script>
+
+</body>
+</html>
