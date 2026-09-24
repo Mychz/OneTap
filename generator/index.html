@@ -399,9 +399,9 @@ if (response.ok) {
     const qrBox = document.createElement("div");
 
     qrBox.style.position = "absolute";
-    qrBox.style.width = "16.5mm";
-    qrBox.style.height = "16.5mm";
-    qrBox.style.right = "14.5mm";
+    qrBox.style.width = "18mm";
+    qrBox.style.height = "18mm";
+    qrBox.style.right = "11mm";
     qrBox.style.bottom = "8mm";
     qrBox.style.background = "white";
 
@@ -409,8 +409,8 @@ if (response.ok) {
 
     new QRCode(qrBox, {
       text: permanentURL,
-      width: 57,
-      height: 57,
+      width: 68,
+      height: 68,
       correctLevel: QRCode.CorrectLevel.H
     });
   }
