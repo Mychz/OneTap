@@ -401,16 +401,16 @@ if (response.ok) {
     qrBox.style.position = "absolute";
     qrBox.style.width = "17mm";
     qrBox.style.height = "17mm";
-    qrBox.style.right = "12.5mm";
-    qrBox.style.bottom = "7mm";
+    qrBox.style.right = "12mm";
+    qrBox.style.bottom = "9mm";
     qrBox.style.background = "white";
 
     card.appendChild(qrBox);
 
     new QRCode(qrBox, {
       text: permanentURL,
-      width: 68,
-      height: 68,
+      width: 64,
+      height: 64,
       correctLevel: QRCode.CorrectLevel.H
     });
   }
